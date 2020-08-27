@@ -10,15 +10,20 @@
 }
 else
 {
-	<div class="col-3">
+	<div class="col-10">
 		<div class="input-group mb-3 align-baseline">
 			<div class="input-group-prepend">
 				<span class="input-group-text">
 					<span class="oi oi-magnifying-glass" id="basic-addon1" />
 				</span>
 			</div>
-			<input type="text" class="form-control" @oninput="Filter" placeholder="Filter" aria-label="Filter" aria-describedby="basic-addon1" />
+			<input type="text" class="form-control" @bind="Filter" @bind:event="oninput" placeholder="Filter" aria-label="Filter" aria-describedby="basic-addon1" />
+			<button class="btn-primary col-1 ml-2 mr-2" @onclick="SortAZ">Sort <span class="oi oi-arrow-top" /></button>
+			<button class="btn btn-primary col-1 ml-2" @onclick="SortZA">Sort <span class="oi oi-arrow-bottom" /></button>
 		</div>
+	</div>
+	<div>
+
 	</div>
 
 	<div class="wrapper">
@@ -33,17 +38,21 @@ else
 {
 	public PhoneRoot contacts { get; set; }
 	public List<PhoneContact> filteredcontacts { get; set; } = null;
-	public string barry { get; set; }
 
-	public void Filter(ChangeEventArgs e)
+	private string _Filter = string.Empty;
+	public string Filter
 	{
-		string filter = e.Value.ToString().ToLower();
-		filteredcontacts = contacts.contacts.Where(
-			c => c.name.ToLower().Contains(filter) ||
-			c.address.ToLower().Contains(filter) ||
-			c.phone_number.ToLower().Contains(filter)
-			).ToList();
+		get
+		{
+			return (_Filter);
+		}
+		set
+		{
+			_Filter = value;
+			FilterSort(_Filter.ToLower());
+		}
 	}
+	private bool SortAlpha = false;
 
 	protected async override Task OnInitializedAsync()
 	{
@@ -51,5 +60,32 @@ else
 		filteredcontacts = contacts.contacts;
 	}
 
+	public void SortAZ()
+	{
+		SortAlpha = true;
+		FilterSort(_Filter.ToLower());
+	}
+
+	public void SortZA()
+	{
+		SortAlpha = false;
+		FilterSort(_Filter.ToLower());
+	}
+
+	private void FilterSort(string filter)
+	{
+		IEnumerable<PhoneContact> filtering = contacts.contacts.Where(
+			c => c.name.ToLower().Contains(filter) ||
+			c.address.ToLower().Contains(filter) ||
+			c.phone_number.ToLower().Contains(filter)
+			);
+
+		if (SortAlpha)
+			filtering = filtering.OrderBy(f => f.name);
+		else
+			filtering = filtering.OrderByDescending(f => f.name);
+
+		filteredcontacts = filtering.ToList();
+	}
 
 }
