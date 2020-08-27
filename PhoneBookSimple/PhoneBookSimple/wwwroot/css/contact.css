@@ -1,0 +1,39 @@
+﻿body {
+}
+
+.wrapper {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-gap: 10px;
+}
+
+.fancyborder {
+	border: 1px solid #888888;
+	padding: 10px;
+	border-radius: 10px;
+	transition: 2s;
+}
+
+.fancyborder:hover {
+	position: relative;
+	left: -2px;
+	top: -2px;
+	box-shadow: 2px 5px 5px #888888;
+	transition: 0.5s;
+	background-color: lightblue;
+	cursor: pointer;
+}
+
+.appear {
+	animation: fadein 2s;
+}
+
+@keyframes fadein {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}

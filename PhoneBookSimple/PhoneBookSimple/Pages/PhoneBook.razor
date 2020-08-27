@@ -1,0 +1,55 @@
+﻿@page "/PhoneBook"
+
+@using PhoneBookSimple.Model
+@using PhoneBookSimple.Components
+@inject HttpClient http
+
+@if (contacts is null)
+{
+	<div class="spinner-grow" />
+}
+else
+{
+	<div class="col-3">
+		<div class="input-group mb-3 align-baseline">
+			<div class="input-group-prepend">
+				<span class="input-group-text">
+					<span class="oi oi-magnifying-glass" id="basic-addon1" />
+				</span>
+			</div>
+			<input type="text" class="form-control" @oninput="Filter" placeholder="Filter" aria-label="Filter" aria-describedby="basic-addon1" />
+		</div>
+	</div>
+
+	<div class="wrapper">
+		@foreach (PhoneContact contact in filteredcontacts)
+		{
+			<Contact PhonebookEntry="contact" />
+		}
+	</div>
+}
+
+@code
+{
+	public PhoneRoot contacts { get; set; }
+	public List<PhoneContact> filteredcontacts { get; set; } = null;
+	public string barry { get; set; }
+
+	public void Filter(ChangeEventArgs e)
+	{
+		string filter = e.Value.ToString().ToLower();
+		filteredcontacts = contacts.contacts.Where(
+			c => c.name.ToLower().Contains(filter) ||
+			c.address.ToLower().Contains(filter) ||
+			c.phone_number.ToLower().Contains(filter)
+			).ToList();
+	}
+
+	protected async override Task OnInitializedAsync()
+	{
+		contacts = await http.GetFromJsonAsync<PhoneRoot>("http://www.mocky.io/v2/581335f71000004204abaf83");
+		filteredcontacts = contacts.contacts;
+	}
+
+
+}

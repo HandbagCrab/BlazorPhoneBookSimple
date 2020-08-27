@@ -1,0 +1,10 @@
+﻿@using PhoneBookSimple.Model
+<div class="fancyborder appear">
+	<div>@PhonebookEntry.name</div>
+	<div>@PhonebookEntry.phone_number</div>
+	<div>@PhonebookEntry.address</div>
+</div>
+@code {
+	[Parameter]
+	public PhoneContact PhonebookEntry { get; set; }
+}
